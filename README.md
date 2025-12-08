@@ -6,7 +6,7 @@ A [FastAPI](https://github.com/fastapi/fastapi)-based project that serves as a d
 
 ## Usage
 
-### `https://punkapi.online/v3/`
+### `https://punkapi-alxiw.amvera.io/v3/`
 
 This is the **BASE URL**. Below are several endpoints and parameters for retrieving data.
 
@@ -35,7 +35,7 @@ This is the **BASE URL**. Below are several endpoints and parameters for retriev
 ### Example of API response
 
 E.g. beer #366: 
-`https://punkapi.online/v3/beers/366`
+`https://punkapi-alxiw.amvera.io/v3/beers/366`
 
 <details>
 <summary>JSON format API response example</summary>
