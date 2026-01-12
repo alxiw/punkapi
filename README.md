@@ -15,7 +15,7 @@ This is the **BASE URL**. Below are several endpoints and parameters for retriev
 * `beers/random` – retrieve a random beer
 * `beers/{id}` – retrieve a single beer by its id
 * `beers?page={page_number}` – retrieve a list of all the beers with paging, by default 30 items per page
-* `images/{id}.png` – retrieve the image according to specified beer id (use three-digit format, e.g. 001.png or 336.png)
+* `images/{id}.png` – retrieve the beer's image, the image filename is not strictly a numeric id, but is taken directly from the image field of the corresponding beer object in the JSON data, it can be, for example, 001.png, 336.png, keg.png, etc. (use the value from the image field "as is" to construct the file path)
 
 ### Optional query parameters for `/beers`
 
