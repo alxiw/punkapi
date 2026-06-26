@@ -1,44 +1,66 @@
 # PunkAPI
 
-A [FastAPI](https://github.com/fastapi/fastapi)-based project that serves as a digital archive of BrewDog's [DIY Dog](https://drink.brewdog.com/uk/diy-dog) beers. It provides an API to access detailed information about each beer, including its recipe and associated image. The catalog data was initially extracted from a PDF document and transformed into JSON and PNG files. These files are placed in `data` and `img` folders according to their sequential number within the catalog. So, PunkAPI offers an interface to interact with this data. The API endpoints and their functionalities are outlined below.
+A [FastAPI](https://github.com/fastapi/fastapi)-based **REST API** serving as a digital archive of BrewDog's [DIY Dog](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) beers. It provides a paginated catalog of all beers, with detailed information about each one, including its name, description, recipe, and image.
 
-<img src="artwork-01.jpg" alt="drawing" width="300"/> <img src="artwork-02.jpg" alt="drawing" width="300"/>
+<img src="artwork.webp" alt="drawing" width="360"/>
 
 ## Usage
 
 ### `https://punkapi-alxiw.amvera.io/v3/`
 
-This is the **BASE URL**. Below are several endpoints and parameters for retrieving data.
+All endpoints below are relative to the base URL above.
 
 ### Endpoints
 
-* `beers/random` – retrieve a random beer
-* `beers/{id}` – retrieve a single beer by its id
-* `beers?page={page_number}` – retrieve a list of all the beers with paging, by default 30 items per page
-* `images/{id}.png` – retrieve the beer's image, the image filename is not strictly a numeric id, but is taken directly from the image field of the corresponding beer object in the JSON data, it can be, for example, 001.png, 336.png, keg.png, etc. (use the value from the image field "as is" to construct the file path)
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `beers?page={pagenumber}` | List all beers (paginated) |
+| GET | `beers/{id}` | Get a single beer by its numeric id |
+| GET | `beers/random` | Get a random beer |
+| GET | `images/{filename}` | Get a beer's image |
 
-### Optional query parameters for `/beers`
+#### `GET /beers`
 
-* `per_page` – specify the number of items to return per page, the value can range from 10 to 80, 30 by default
-* `beer_name={string}` – retrieve a list of beers that match the specified string
-* `ids={id,id,...}` – retrieve a list of beers that match the specified ids
-* `brewed_before={string}` – retrieve a list of beers that have brewed date less than the specified date, format: MM-YYYY or YYYY
-* `brewed_after={string}` – retrieve a list of beers that have brewed date greater than the specified date, format: MM-YYYY or YYYY
-* `abv_gt={number}` – retrieve a list of beers that have an ABV greater than the specified number
-* `abv_lt={number}` – retrieve a list of beers that have an ABV less than the specified number
-* `ibu_gt={number}` – retrieve a list of beers that have an IBU greater than the specified number
-* `ibu_lt={number}` – retrieve a list of beers that have an IBU less than the specified number
-* `ebc_gt={number}` – retrieve a list of beers that have an EBC greater than the specified number
-* `ebc_lt={number}` – retrieve a list of beers that have an EBC less than the specified number
-* `food={string}` – retrieve a list of beers that go well with the specified food
+Returns a paginated list of beers. 
 
-### Example of API response
+**Required:** `page` (integer) – page number (e.g. `?page=1`). 
 
-E.g. beer #366: 
-`https://punkapi-alxiw.amvera.io/v3/beers/366`
+Supports the following optional query parameters:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `per_page` | integer | Items per page, from `10` to `80` (default: `30`) |
+| `beer_name` | string | Filter by name, use `_` instead of spaces (e.g. `punk_ipa`) |
+| `ids` | string | Filter by ids, comma-separated (e.g. `1,5,42`) |
+| `brewed_before` | string | Filter beers brewed earlier than the given date (`MM-YYYY` or `YYYY`) |
+| `brewed_after` | string | Filter beers brewed later than the given date (`MM-YYYY` or `YYYY`) |
+| `abv_gt` / `abv_lt` | number | Filter by ABV greater / less than the given value |
+| `ibu_gt` / `ibu_lt` | number | Filter by IBU greater / less than the given value |
+| `ebc_gt` / `ebc_lt` | number | Filter by EBC greater / less than the given value |
+| `food` | string | Filter beers by food pairing |
+
+#### `GET /beers/{id}`
+
+Returns a single beer by its numeric id. Use the `id` field from the beer object.
+
+#### `GET /beers/random`
+
+Returns a randomly selected beer from the catalog.
+
+#### `GET /images/{filename}`
+
+Returns the image for a beer. The filename is **not** always a numeric id – use the value from the `image` field of the beer object as-is.
+
+**Examples:** `images/001.png`, `images/336.png`, `images/keg.png`
+
+> To get the correct image for a beer, read its `image` field from the JSON response and append it to the `images/` path.
+
+### Example Response
+
+`GET /beers/366` → `https://punkapi-alxiw.amvera.io/v3/beers/366`
 
 <details>
-<summary>JSON format API response example</summary>
+<summary>Show JSON response</summary>
 <br>
 
 ```json
@@ -159,14 +181,19 @@ E.g. beer #366:
 }
 ```
 
-
 </details>
 
+## How It Works
 
+The catalog data was extracted from the [DIY Dog](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) PDF and transformed into JSON and PNG files, stored in `data/` and `img/` folders respectively. The API itself is built with [FastAPI](https://github.com/fastapi/fastapi) and serves as an interface to interact with this data.
 
-## In addition
+> Note that image filenames are not always numeric – the `image` field in the JSON response reflects the actual filename (e.g. `keg.png`), which should be used as-is when constructing the image URL.
 
-The [old project](https://github.com/sammdec/punkapi), which was active until May 1, 2024, has been discontinued. I express my sincere gratitude to its developers and contributors. To continue providing access to BrewDog's DIY Dog beer catalogue as an API, I've created a new version using modern development practices and incorporates the latest beer data. So, that's why the base URL now includes the "v3" prefix. All JSON elements and their corresponding images from the old project have been migrated, reorganized, and complemented with missing information to ensure complete synchronization with the [latest catalogue](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf). As a result, all 415 beers are available. You can explore the list of beer names in the dropdown menu below.
+## Background
+
+This project was created as a replacement for the original [PunkAPI](https://github.com/sammdec/punkapi), which was discontinued in 2024. Thanks to its developers and contributors for the great work.
+
+The new version is built with modern tooling and includes the latest beer data from the catalogue [DIY Dog v8](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) – all 415 beers, with reorganized and completed JSON and images. The `v3` prefix in the base URL reflects this version history.
 
 <details>
 <summary>List of all 415 beers</summary>
