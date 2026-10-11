@@ -11,7 +11,7 @@ def load_data_from_directory(directory_path):
     for filename in os.listdir(directory_path):
         if filename.endswith('.json'):
             file_path = os.path.join(directory_path, filename)
-            with open(file_path, 'r') as file:
+            with open(file_path, 'r', encoding='utf-8') as file:
                 data = json.load(file, object_pairs_hook=OrderedDict)
                 full_data.append(data)
 
