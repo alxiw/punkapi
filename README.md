@@ -6,7 +6,7 @@ A [FastAPI](https://github.com/fastapi/fastapi)-based **REST API** serving as a 
 
 ## Usage
 
-### `https://punkapi-alxiw.amvera.io/v3/`
+### `https://punkapi.dev/v3/`
 
 All endpoints below are relative to the base URL above.
 
@@ -57,7 +57,7 @@ Returns the image for a beer. The filename is **not** always a numeric id – us
 
 ### Example Response
 
-`GET /beers/366` → `https://punkapi-alxiw.amvera.io/v3/beers/366`
+`GET /beers/366` → `https://punkapi.dev/v3/beers/366`
 
 <details>
 <summary>Show JSON response</summary>
