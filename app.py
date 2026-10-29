@@ -4,7 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from service.router import api_router
 
-app = FastAPI()
+app = FastAPI(
+    title="PunkAPI",
+    docs_url="/docs",  # Swagger UI будет доступен здесь
+    openapi_url="/api/v3/openapi.json",  # Спецификация для Swagger
+    version="3.0",
+    summary="REST API serving as a digital archive of BrewDog's DIY Dog beer catalog",
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"], # allow all header
 )
 
-app.include_router(api_router, prefix="/v3")
+app.include_router(api_router, prefix="/api/v3")
 
 
 @app.exception_handler(HTTPException)
@@ -38,9 +44,17 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 
 
-@app.get("/")
+@app.get("/api/v3")
 async def root():
-    return { "project": "https://github.com/alxiw/punkapi" }
+    return {
+        "name": "PunkAPI",
+        "version": "3.0",
+        "status": "healthy",
+        "documentation": "https://punkapi.dev/docs",
+        "source": "https://github.com/alxiw/punkapi",
+        "author": "alxiw",
+        "email": "alxiw@outlook.com",
+    }
 
 
 if __name__ == "__main__":

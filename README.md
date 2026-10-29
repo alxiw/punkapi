@@ -1,12 +1,12 @@
 # PunkAPI
 
-A [FastAPI](https://github.com/fastapi/fastapi)-based **REST API** serving as a digital archive of BrewDog's [DIY Dog](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) beers. It provides a paginated catalog of all beers, with detailed information about each one, including its name, description, recipe, and image.
+A [FastAPI](https://github.com/fastapi/fastapi)-based **REST API** serving as a digital archive of BrewDog's DIY Dog beers. It provides a paginated catalog of all beers, with detailed information about each one, including its name, description, recipe, and image.
 
 <img src="artwork.webp" alt="drawing" width="360"/>
 
 ## Usage
 
-### `https://punkapi.dev/v3/`
+### `https://punkapi.dev/api/v3/`
 
 All endpoints below are relative to the base URL above.
 
@@ -53,11 +53,11 @@ Returns the image for a beer. The filename is **not** always a numeric id – us
 
 **Examples:** `images/001.png`, `images/336.png`, `images/keg.png`
 
-> To get the correct image for a beer, read its `image` field from the JSON response and append it to the `images/` path.
+> Use the exact filename from the response's `image` field when querying `/images/{filename}`. Keep in mind that filenames are not strictly numeric and may include names like `keg.png`.
 
 ### Example Response
 
-`GET /beers/366` → `https://punkapi.dev/v3/beers/366`
+`GET /beers/366` → `https://punkapi.dev/api/v3/beers/366`
 
 <details>
 <summary>Show JSON response</summary>
@@ -185,15 +185,13 @@ Returns the image for a beer. The filename is **not** always a numeric id – us
 
 ## How It Works
 
-The catalog data was extracted from the [DIY Dog](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) PDF and transformed into JSON and PNG files, stored in `data/` and `img/` folders respectively. The API itself is built with [FastAPI](https://github.com/fastapi/fastapi) and serves as an interface to interact with this data.
-
-> Note that image filenames are not always numeric – the `image` field in the JSON response reflects the actual filename (e.g. `keg.png`), which should be used as-is when constructing the image URL.
+The catalog data is parsed directly from BrewDog's [DIY Dog](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) PDF and structured as localized JSON records and PNG assets. The service runs on [FastAPI](https://github.com/fastapi/fastapi), providing fast, asynchronous access and filtering over this static dataset.
 
 ## Background
 
-This project was created as a replacement for the original [PunkAPI](https://github.com/sammdec/punkapi), which was discontinued in 2024. Thanks to its developers and contributors for the great work.
+Following the deprecation of [PunkAPI v2](https://github.com/sammdec/punkapi) in 2024, this project picked up the torch to carry the initiative forward. [PunkAPI v3](https://github.com/alxiw/punkapi) is the direct continuation and modernization of the concept, rebuilt from scratch with modern tooling.
 
-The new version is built with modern tooling and includes the latest beer data from the catalogue [DIY Dog v8](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) – all 415 beers, with reorganized and completed JSON and images. The `v3` prefix in the base URL reflects this version history.
+It incorporates the latest data from the [DIY Dog v8](https://brewdogmedia.s3.eu-west-2.amazonaws.com/docs/2019+DIY+DOG+-+V8.pdf) catalog – featuring all 415 beers with thoroughly reorganized JSON schemas, enhanced metadata, and complete imagery. Version 3 honors its predecessor's legacy while marking a new, actively maintained era.
 
 <details>
 <summary>List of all 415 beers</summary>

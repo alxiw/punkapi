@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 
-from service.api.about import about
 from service.api.image import image
 from service.api.random import random_beer
 from service.api.beer import beer
@@ -12,4 +11,3 @@ api_router.get("/images/{filename:path}")(image)
 api_router.get("/beers/random")(random_beer)
 api_router.get("/beers/{beer_id}")(beer)
 api_router.get("/beers")(beers)
-api_router.get("/")(about)
